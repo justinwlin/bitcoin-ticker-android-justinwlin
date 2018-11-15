@@ -1,4 +1,4 @@
-package com.londonappbrewery.bitcointicker;
+package com.mkrspc.btc;
 
 import org.junit.Test;
 
