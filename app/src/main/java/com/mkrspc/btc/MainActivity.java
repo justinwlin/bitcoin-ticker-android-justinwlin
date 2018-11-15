@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("Bitcoin", "" + adapterView.getItemAtPosition(i));
+                String finalURL = BASE_URL + adapterView.getItemAtPosition(i);
+                Log.d("Bitcoin", "" + finalURL);
+                letsDoSomeNetworking(finalURL);
             }
 
             @Override
@@ -60,27 +64,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO: complete the letsDoSomeNetworking() method
-//    private void letsDoSomeNetworking(String url) {
-//
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        client.get(url, new JsonHttpResponseHandler() {
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                // called when response HTTP status is "200 OK"
-//                Log.d("Bitcoin", "JSON: " + response.toString());
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response) {
-//                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-//                Log.d("Bitcoin", "Request fail! Status code: " + statusCode);
-//                Log.d("Bitcoin", "Fail response: " + response);
-//                Log.e("ERROR", e.toString());
-//            }
-//        });
-//    }
+    private void letsDoSomeNetworking(String url) {
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                Log.d("Bitcoin", "JSON: " + response.toString());
+                try{
+                    String price = response.getString("last");
+                    mPriceTextView.setText(price);
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.d("Bitcoin", "Request fail! Status code: " + statusCode);
+                Log.d("Bitcoin", "Fail response: " + response);
+                Log.e("ERROR", e.toString());
+            }
+        });
+    }
 
 
 }
